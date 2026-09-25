@@ -5,11 +5,11 @@ import {
   IndianRupee,
 } from 'lucide-react'
 
-import StatCard from '../../components/dashboard/StatCard'
-import SalesChart from '../../components/dashboard/SalesChart'
-import StockStatus from '../../components/dashboard/StockStatus'
-import LowStock from '../../components/dashboard/LowStock'
-import ExpiringMedicines from '../../components/dashboard/ExpiringMedicines'
+import StatCard from '../../../components/dashboard/StatCard'
+import SalesChart from '../../../components/dashboard/SalesChart'
+import StockStatus from '../../../components/dashboard/StockStatus'
+import LowStock from '../../../components/dashboard/LowStock'
+import ExpiringMedicines from '../../../components/dashboard/ExpiringMedicines'
 
 function Dashboard() {
   return (

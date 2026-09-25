@@ -7,9 +7,118 @@ import {
   BarChart3,
   Bell,
   Settings,
+  Building2,
+  Users,
+  Store,
+  LogOut,
 } from 'lucide-react'
 
-function Sidebar({ currentPage, setCurrentPage }) {
+function Sidebar({ currentPage, setCurrentPage, currentRole, onLogout }) {
+
+  const pharmacyMenu = [
+    {
+      name: 'Dashboard',
+      page: 'dashboard',
+      icon: LayoutDashboard,
+    },
+    {
+      name: 'Inventory',
+      page: 'inventory',
+      icon: Package,
+    },
+    {
+      name: 'Billing',
+      page: 'billing',
+      icon: Receipt,
+    },
+    {
+      name: 'Purchases',
+      page: 'purchases',
+      icon: ShoppingCart,
+    },
+    {
+      name: 'Distributors',
+      page: 'distributors',
+      icon: Truck,
+    },
+  ]
+
+  const pharmacySecondaryMenu = [
+    {
+      name: 'Analytics',
+      page: 'analytics',
+      icon: BarChart3,
+    },
+    {
+      name: 'Alerts',
+      page: 'alerts',
+      icon: Bell,
+    },
+  ]
+
+  const distributorMenu = [
+    {
+      name: 'Dashboard',
+      page: 'dashboard',
+      icon: LayoutDashboard,
+    },
+    {
+      name: 'Catalog & Stock',
+      page: 'catalog',
+      icon: Package,
+    },
+    {
+      name: 'Orders',
+      page: 'orders',
+      icon: ShoppingCart,
+    },
+    {
+      name: 'Pharmacies',
+      page: 'pharmacies',
+      icon: Building2,
+    },
+    {
+      name: 'Notifications',
+      page: 'notifications',
+      icon: Bell,
+    },
+  ]
+
+  const adminMenu = [
+    {
+      name: 'Dashboard',
+      page: 'dashboard',
+      icon: LayoutDashboard,
+    },
+    {
+      name: 'Pharmacies',
+      page: 'pharmacies',
+      icon: Store,
+    },
+    {
+      name: 'Distributors',
+      page: 'distributors',
+      icon: Truck,
+    },
+    {
+      name: 'Users',
+      page: 'users',
+      icon: Users,
+    },
+  ]
+
+  let mainMenu = []
+  let secondaryMenu = []
+
+  if (currentRole === 'distributor') {
+    mainMenu = distributorMenu
+  } else if (currentRole === 'admin') {
+    mainMenu = adminMenu
+  } else {
+    mainMenu = pharmacyMenu
+    secondaryMenu = pharmacySecondaryMenu
+  }
+
   return (
     <aside className="fixed left-0 top-0 w-64 h-screen bg-[#0F2742] text-white flex flex-col">
 
@@ -21,95 +130,79 @@ function Sidebar({ currentPage, setCurrentPage }) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-4 py-6">
+      <nav className="flex-1 px-4 py-6 ">
 
         {/* Main Navigation */}
         <div className="space-y-2">
+          {mainMenu.map((item) => {
+            const Icon = item.icon
 
-          {/* Dashboard */}
-          <button 
-           onClick={() => setCurrentPage("dashboard")}
-          className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${
-          currentPage === "dashboard"
-          ? "bg-[#159A9C] text-white"
-          : "text-gray-300 hover:bg-white/10 hover:text-white"
-         }`}
-      >
-            <LayoutDashboard size={20} />
-            <span className="font-medium">Dashboard</span>
-          </button>
-
-          {/* Inventory */}
-          <button 
-          onClick={() => setCurrentPage("inventory")}
-  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${
-    currentPage === "inventory"
-      ? "bg-[#159A9C] text-white"
-      : "text-gray-300 hover:bg-white/10 hover:text-white"
-  }`}>
-            <Package size={20} />
-            <span>Inventory</span>
-          </button>
-
-          {/* Billing */}
-          <button 
-          onClick={() => setCurrentPage("billing")}
-  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${
-    currentPage === "billing"
-      ? "bg-[#159A9C] text-white"
-      : "text-gray-300 hover:bg-white/10 hover:text-white"
-  }`}>
-            <Receipt size={20} />
-            <span>Billing</span>
-          </button>
-
-          {/* Purchases */}
-          <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-white/10 hover:text-white transition">
-            <ShoppingCart size={20} />
-            <span>Purchases</span>
-          </button>
-
-          {/* Distributors */}
-          <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-white/10 hover:text-white transition">
-            <Truck size={20} />
-            <span>Distributors</span>
-          </button>
-
+            return (
+              <button
+                key={item.page}
+                onClick={() => setCurrentPage(item.page)}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${
+                  currentPage === item.page
+                    ? 'bg-[#159A9C] text-white'
+                    : 'text-gray-300 hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                <Icon size={20} />
+                <span className="font-medium">{item.name}</span>
+              </button>
+            )
+          })}
         </div>
 
-        {/* Secondary Navigation */}
-        <div className="mt-8 pt-6 border-t border-white/10 space-y-2">
+        {/* Pharmacy Secondary Navigation */}
+        {secondaryMenu.length > 0 && (
+          <div className="mt-8 pt-6 border-t border-white/10 space-y-2">
+            {secondaryMenu.map((item) => {
+              const Icon = item.icon
 
-          {/* Analytics */}
-          <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-white/10 hover:text-white transition">
-            <BarChart3 size={20} />
-            <span>Analytics</span>
-          </button>
-
-          {/* Alerts */}
-          <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-white/10 hover:text-white transition">
-            <Bell size={20} />
-            <span>Alerts</span>
-          </button>
-
-        </div>
-
+              return (
+                <button
+                  key={item.page}
+                  onClick={() => setCurrentPage(item.page)}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${
+                    currentPage === item.page
+                      ? 'bg-[#159A9C] text-white'
+                      : 'text-gray-300 hover:bg-white/10 hover:text-white'
+                  }`}
+                >
+                  <Icon size={20} />
+                  <span>{item.name}</span>
+                </button>
+              )
+            })}
+          </div>
+        )}
       </nav>
 
-      {/* Settings */}
-      <div className="px-4 py-5 border-t border-white/10">
+      {/* Bottom Navigation */}
+      <div className="px-4 py-5 border-t border-white/10 space-y-2">
 
+        {/* Settings */}
         <button
-  onClick={() => setCurrentPage("settings")}
-  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${
-    currentPage === "settings"
-      ? "bg-[#159A9C] text-white"
-      : "text-gray-300 hover:bg-white/10 hover:text-white"
-  }`}
->
-  <Settings size={20} />
-  <span>Settings</span>
-</button>
+          onClick={() => setCurrentPage('settings')}
+          className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${
+            currentPage === 'settings'
+              ? 'bg-[#159A9C] text-white'
+              : 'text-gray-300 hover:bg-white/10 hover:text-white'
+          }`}
+        >
+          <Settings size={20} />
+          <span>Settings</span>
+        </button>
+
+        {/* Logout */}
+        <button
+          onClick={onLogout}
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-white/10 hover:text-white transition"
+        >
+          <LogOut size={20} />
+          <span>Logout</span>
+        </button>
 
       </div>
 

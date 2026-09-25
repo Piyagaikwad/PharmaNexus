@@ -3,17 +3,19 @@ import "./App.css"
 
 import Sidebar from "./components/layout/Sidebar"
 import Topbar from "./components/layout/Topbar"
-import Dashboard from "./pages/Dashboard/Dashboard"
-import Inventory from "./pages/Inventory/Inventory"
-import Settings from "./pages/Settings/Settings"
-import Billing from "./pages/Billing/Billing"
-import Invoice from "./pages/Invoices/Invoice"
+
+import PharmacyDashboard from "./pages/Pharmacy/Dashboard/Dashboard"
+import Inventory from "./pages/Pharmacy/Inventory/Inventory"
+import Settings from "./pages/Pharmacy/Settings/Settings"
+import Billing from "./pages/Pharmacy/Billing/Billing"
+import Invoice from "./pages/Pharmacy/Invoices/Invoice"
+
+import DistributorDashboard from "./pages/Distributorside/Dashboard/Dashboard"
+import Catalog from "./pages/Distributorside/Catalog/Catalog"
+import AdminDashboard from "./pages/Admin/AdminDashboard"
 
 import Login from "./pages/Auth/Login"
 import Register from "./pages/Auth/Register"
-
-import AdminDashboard from "./pages/Admin/AdminDashboard"
-import DistributorDashboard from "./pages/Distributor/DistributorDashboard"
 
 function App() {
   // Authentication
@@ -21,11 +23,12 @@ function App() {
   const [currentRole, setCurrentRole] = useState("")
   const [showRegister, setShowRegister] = useState(false)
 
-  // Pharmacy state
+  // Application state
   const [currentPage, setCurrentPage] = useState("dashboard")
   const [theme, setTheme] = useState("light")
   const [currentInvoice, setCurrentInvoice] = useState(null)
 
+  // Pharmacy profile
   const [profile, setProfile] = useState({
     pharmacyName: "Apollo Pharmacy",
     ownerName: "Pharmacy Owner",
@@ -34,7 +37,7 @@ function App() {
     address: "Pune, Maharashtra",
   })
 
-  // Temporary shared inventory data
+  // Temporary pharmacy inventory data
   const [medicines, setMedicines] = useState([
     {
       name: "Paracetamol 500mg",
@@ -119,17 +122,6 @@ function App() {
     )
   }
 
-  // Admin dashboard
-  if (currentRole === "admin") {
-    return <AdminDashboard />
-  }
-
-  // Distributor dashboard
-  if (currentRole === "distributor") {
-    return <DistributorDashboard />
-  }
-
-  // Pharmacist application
   return (
     <div
       data-theme={theme}
@@ -138,51 +130,117 @@ function App() {
       <Sidebar
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
+        currentRole={currentRole}
         onLogout={handleLogout}
       />
 
       <div className="ml-64 h-screen flex flex-col">
-        <Topbar profile={profile} />
+        <Topbar
+          profile={profile}
+          currentRole={currentRole}
+          currentPage={currentPage}
+        />
 
         <main className="flex-1 min-h-0 p-8 overflow-y-auto overflow-x-hidden theme-page">
-          {currentPage === "dashboard" && (
-            <Dashboard
-              medicines={medicines}
-              profile={profile}
-            />
+
+          {/* PHARMACIST PAGES */}
+          {currentRole === "pharmacist" && (
+            <>
+              {currentPage === "dashboard" && (
+                <PharmacyDashboard
+                  medicines={medicines}
+                  profile={profile}
+                />
+              )}
+
+              {currentPage === "inventory" && (
+                <Inventory
+                  medicines={medicines}
+                  setMedicines={setMedicines}
+                />
+              )}
+
+              {currentPage === "billing" && (
+                <Billing
+                  medicines={medicines}
+                  setMedicines={setMedicines}
+                  setCurrentInvoice={setCurrentInvoice}
+                  setCurrentPage={setCurrentPage}
+                />
+              )}
+
+              {currentPage === "invoice" && (
+                <Invoice
+                  invoice={currentInvoice}
+                  onClose={() => setCurrentPage("billing")}
+                />
+              )}
+
+              {currentPage === "settings" && (
+                <Settings
+                  profile={profile}
+                  setProfile={setProfile}
+                  theme={theme}
+                  setTheme={setTheme}
+                />
+              )}
+            </>
           )}
 
-          {currentPage === "inventory" && (
-            <Inventory
-              medicines={medicines}
-              setMedicines={setMedicines}
-            />
+          {/* DISTRIBUTOR PAGES */}
+          {currentRole === "distributor" && (
+            <>
+              {currentPage === "dashboard" && (
+                <DistributorDashboard />
+              )}
+
+              {currentPage === "catalog" && (
+                <Catalog />
+              )}
+
+              {currentPage === "orders" && (
+                <div>Distributor Orders</div>
+              )}
+
+              {currentPage === "pharmacies" && (
+                <div>Connected Pharmacies</div>
+              )}
+
+              {currentPage === "notifications" && (
+                <div>Distributor Notifications</div>
+              )}
+
+              {currentPage === "settings" && (
+                <div>Distributor Settings</div>
+              )}
+            </>
           )}
 
-          {currentPage === "billing" && (
-            <Billing
-              medicines={medicines}
-              setMedicines={setMedicines}
-              setCurrentInvoice={setCurrentInvoice}
-              setCurrentPage={setCurrentPage}
-            />
+          {/* ADMIN PAGES */}
+          {currentRole === "admin" && (
+            <>
+              {currentPage === "dashboard" && (
+                <AdminDashboard />
+              )}
+
+              {currentPage === "pharmacies" && (
+                <div>Admin Pharmacies</div>
+              )}
+
+              {currentPage === "distributors" && (
+                <div>Admin Distributors</div>
+              )}
+
+              {currentPage === "users" && (
+                <div>Admin Users</div>
+              )}
+
+              {currentPage === "settings" && (
+                <div>Admin Settings</div>
+              )}
+            </>
           )}
 
-          {currentPage === "invoice" && (
-            <Invoice
-              invoice={currentInvoice}
-              onClose={() => setCurrentPage("billing")}
-            />
-          )}
-
-          {currentPage === "settings" && (
-            <Settings
-              profile={profile}
-              setProfile={setProfile}
-              theme={theme}
-              setTheme={setTheme}
-            />
-          )}
         </main>
       </div>
     </div>
